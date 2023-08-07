@@ -1,6 +1,46 @@
 <!doctype html>
 <html lang="en">
   <script>
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch("/get-profile")
+        const data = await response.json()
+
+        document.querySelector("#name").textContent = data.name
+        document.querySelector("#email").textContent = data.email
+        document.querySelector("#hobbies").textContent = data.hobbies
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    fetchUserProfile()
+
+    const saveUpdatedProfile = async () => {
+      const updatedProfile = {
+        name: document.querySelector("#input-name").value,
+        email: document.querySelector("#input-email").value,
+        hobbies: document.querySelector("#input-hobbies").value,
+      }
+
+      try {
+        const response = await fetch("/update-profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProfile),
+        })
+
+        const data = await response.json()
+        console.log("Profile updated:", data)
+
+        fetchUserProfile()
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
     const editProfile = () => {
       document.querySelector(".container").style.display = "none"
       document.querySelector(".container-edit").style.display = "block"
@@ -15,7 +55,7 @@
       document.querySelector("#input-hobbies").value = hobbies
     }
 
-    const saveProfile = () => {
+    const saveProfile = async () => {
       document.querySelector(".container-edit").style.display = "none"
       document.querySelector(".container").style.display = "block"
 
@@ -27,6 +67,8 @@
 
       document.querySelector("#hobbies").textContent =
         document.querySelector("#input-hobbies").value
+
+      await saveUpdatedProfile()
     }
   </script>
   <head>

@@ -17,64 +17,60 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"))
 })
 
-app.get("/get-profile", (req, res) => {
-  const response = res
-  MongoClient.connect(
-    "mongodb://admin:password@localhost:27017",
-    (err, client) => {
-      if (err) throw err
+app.get("/get-profile", async (req, res) => {
+  try {
+    const client = await MongoClient.connect(
+      "mongodb://admin:password@localhost:27017",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    )
 
-      console.log("connected to database")
-      const db = client.db("user-account")
-      const query = { userId: 1 }
-      db.collection("users").findOne(query, (err, result) => {
-        if (err) throw err
-        client.close()
-        response.send(result)
-      })
-    },
-  )
+    const db = client.db("user-account")
+    const query = { userId: 1 }
+    const result = await db.collection("users").findOne(query)
+    client.close()
+
+    res.send(result)
+  } catch (error) {
+    console.error("Error:", error)
+    res.status(500).send("Error fetching profile")
+  }
 })
 
-app.post("/update-profile", (req, res) => {
+app.post("/update-profile", async (req, res) => {
   const userObj = req.body
 
   console.log(userObj)
   console.log("Connecting to the database")
 
-  MongoClient.connect(
-    "mongodb://admin:password@127.0.0.1:27017",
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    (err, client) => {
-      if (err) {
-        console.error("Error connecting to MongoDB:", err)
-        return res.status(500).send("Error connecting to the database")
-      }
+  try {
+    const client = await MongoClient.connect(
+      "mongodb://admin:password@127.0.0.1:27017",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    )
 
-      console.log("Successfully connected to the user-account db")
+    console.log("Successfully connected to the user-account db")
 
-      const db = client.db("user-account")
-      const query = { userId: 1 }
-      const newValue = { $set: userObj }
+    const db = client.db("user-account")
+    const query = { userId: 1 }
+    const newValue = { $set: userObj }
 
-      db.collection("users").updateOne(
-        query,
-        newValue,
-        { upsert: true },
-        (err, result) => {
-          if (err) {
-            console.error("Error updating the document:", err)
-            client.close()
-            return res.status(500).send("Error updating the document")
-          }
+    const result = await db
+      .collection("users")
+      .updateOne(query, newValue, { upsert: true })
 
-          console.log("Successfully inserted/updated")
-          client.close()
-          return res.send(userObj)
-        },
-      )
-    },
-  )
+    console.log("Successfully inserted/updated")
+    client.close()
+    res.send(userObj)
+  } catch (error) {
+    console.error("Error:", error)
+    res.status(500).send("Error updating the document")
+  }
 })
 
 app.listen(3000, function () {
