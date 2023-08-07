@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <script>
+    const editProfile = () => {
+      document.querySelector(".container").style.display = "none"
+      document.querySelector(".container-edit").style.display = "block"
+
+      const name = document.querySelector("#name").textContent
+      document.querySelector("#input-name").value = name
+
+      const email = document.querySelector("#email").textContent
+      document.querySelector("#input-email").value = email
+
+      const hobbies = document.querySelector("#hobbies").textContent
+      document.querySelector("#input-hobbies").value = hobbies
+    }
+
+    const saveProfile = () => {
+      document.querySelector(".container-edit").style.display = "none"
+      document.querySelector(".container").style.display = "block"
+
+      document.querySelector("#name").textContent =
+        document.querySelector("#input-name").value
+
+      document.querySelector("#email").textContent =
+        document.querySelector("#input-email").value
+
+      document.querySelector("#hobbies").textContent =
+        document.querySelector("#input-hobbies").value
+    }
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <style>
+      img {
+        width: 30rem;
+      }
+      .flex-row {
+        flex-direction: row;
+        display: flex;
+        gap: 10px;
+      }
+      .button {
+        padding: 10px;
+      }
+      .container-edit {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>User Profile</h1>
+    <img
+      src="https://akm-img-a-in.tosshub.com/businesstoday/images/story/202305/fwqvw2baiaijdey-sixteen_nine.jpg?size=948:533"
+    />
+    <div class="container">
+      <div class="flex-row">
+        <p>Username:</p>
+        <p id="name">Docker ps</p>
+      </div>
+      <div class="flex-row">
+        <p>Email:</p>
+        <p id="email">email@docker.in</p>
+      </div>
+      <div class="flex-row">
+        <p>Hobbies:</p>
+        <p id="hobbies">Dockering</p>
+      </div>
+      <button class="button" onclick="editProfile()">Edit Details</button>
+    </div>
+    <div class="container-edit">
+      <div class="flex-row">
+        <p>Username:</p>
+        <input type="text" id="input-name" />
+      </div>
+      <div class="flex-row">
+        <p>Email:</p>
+        <input type="email" id="input-email" />
+      </div>
+      <div class="flex-row">
+        <p>Hobbies:</p>
+        <input type="text" id="input-hobbies" />
+      </div>
+      <button class="button" onclick="saveProfile()">Save Details</button>
+    </div>
+  </body>
+</html>
